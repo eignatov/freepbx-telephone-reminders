@@ -1,0 +1,72 @@
+#!/bin/bash
+
+
+cd /
+wget http://pbxinaflash.net/scripts/reminders.tgz
+tar -zxvf reminders.tgz
+rm -f reminders.tgz
+
+cd /tmp
+cat reminder-dialplan.txt >> /etc/asterisk/extensions_custom.conf
+
+sed -i '
+/\[from-internal-custom\]/ {
+a\
+exten => 123,1,Answer\
+exten => 123,2,Wait(1)\
+exten => 123,3,Authenticate(12345678)\
+exten => 123,4,Goto(reminder,s,1)\
+
+}' /etc/asterisk/extensions_custom.conf
+
+sed -i '
+/cron.monthly/ {
+a\
+\
+0 0 * * * root /var/lib/asterisk/agi-bin/run_recurring\
+3 0 * * * root /var/lib/asterisk/agi-bin/run_reminders
+}' /etc/crontab
+
+cd /root
+
+ln -s /opt/swift/bin/swift /usr/bin/swift
+
+chown root:root /tmp
+chmod 1777 /tmp
+
+chown root:root /usr
+chmod 755 /usr
+chown root:root /usr/local
+chmod 755 /usr/local
+chown root:root /usr/local/bin
+chmod 755 /usr/local/bin
+
+chown root:root /var
+chmod 755 /var
+chown root:root /var/lib
+chmod 755 /var/lib
+chown asterisk:asterisk /var/lib/asterisk
+chmod 720 /var/lib/asterisk
+chown asterisk:asterisk /var/lib/asterisk/agi-bin
+chmod 775 /var/lib/asterisk/agi-bin
+chown asterisk:asterisk /var/lib/asterisk/sounds
+chmod 775 /var/lib/asterisk/sounds
+chown asterisk:asterisk /var/lib/asterisk/sounds/custom
+chmod 771 /var/lib/asterisk/sounds/custom
+chown asterisk:asterisk /var/lib/asterisk/sounds/tts
+chmod 777 /var/lib/asterisk/sounds/tts
+chown root:root /var/spool
+chmod 755 /var/spool
+chown asterisk:asterisk /var/spool/asterisk
+chmod 775 /var/spool/asterisk
+chown asterisk:asterisk /var/spool/asterisk/recurring
+chmod 775 /var/spool/asterisk/recurring
+chown asterisk:asterisk /var/spool/asterisk/reminders
+chmod 775 /var/spool/asterisk/reminders
+chown root:root /var/www
+chmod 755 /var/www
+chown root:root /var/www/html
+chmod 755 /var/www/html
+chown asterisk:asterisk /var/www/html/reminders
+chmod 775 /var/www/html/reminders
+

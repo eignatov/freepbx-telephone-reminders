@@ -1,0 +1,11 @@
+<module>
+<rawname>reminders</rawname>
+<name>Reminders</name>
+<version>4.0.0</version>
+<type>tool</type>
+<category>Third Party Addon</category>
+ 
+<menuitems>
+<reminders>Reminders</reminders>
+</menuitems>
+</module>
